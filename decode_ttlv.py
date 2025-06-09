@@ -41,10 +41,9 @@ class DecodeTTLV(object):
             print("{0}{1}:{2}({3}):{4}".format(
                 self.indent, tag_val, type_val, size_val, value))
 
-            if len(self.nest):
-                if self.offset == self.nest[-1]:
-                    self.nest = self.nest[:-1]
-                    self.indent = " " * len(self.nest)
+            while len(self.nest) and self.offset == self.nest[-1]:
+                self.nest = self.nest[:-1]
+                self.indent = " " * len(self.nest)
 
     def _decode_tag(self):
         fmt = ">Bh"
