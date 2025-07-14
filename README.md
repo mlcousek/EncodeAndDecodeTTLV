@@ -20,6 +20,12 @@ This utility provides both encoding and decoding capabilities for TTLV (Tag-Type
 - Comprehensive data type support with proper padding
 - Structured text format with indentation support
 
+### 🧪 **Round-Trip Test Suite** (`test_roundtrip.py`)
+- Comprehensive validation across 159 test files (structured, JSON, CSV formats)
+- Configurable output verbosity and summary display options
+- 100% round-trip accuracy validation for all supported formats
+- Automated regression testing for encoder/decoder compatibility
+
 ## Installation
 
 Install the required PyKMIP library:
@@ -27,7 +33,7 @@ Install the required PyKMIP library:
 pip install -r requirements.txt
 ```
 
-**Note:** The project includes a comprehensive test suite in the `test_cases/` directory with 53 example KMIP request/response files for validation and testing. Additional usage examples are available in the `examples/` directory.
+**Note:** The project includes a comprehensive test suite in the `test_cases/` directory with 159 test files (53 each in structured text, JSON, and CSV formats) covering various KMIP request/response scenarios for validation and testing.
 
 ## Usage
 
@@ -163,42 +169,114 @@ python decode_ttlv.py $(cat encoded.hex)
 
 ### 🧪 **Round-Trip Testing**
 
-The project includes a comprehensive round-trip test suite that validates encoding and decoding functionality across all example KMIP request/response files:
+The project includes a comprehensive round-trip test suite (`test_roundtrip.py`) that validates encoding and decoding functionality across all supported formats with 159 test files (53 each for structured text, JSON, and CSV formats):
+
+#### **Basic Usage**
+```bash
+# Test all formats (default)
+python test_roundtrip.py
+
+# Test specific format
+python test_roundtrip.py --format structured
+python test_roundtrip.py --format json
+python test_roundtrip.py --format csv
+```
+
+#### **Command Line Options**
 
 ```bash
-python test_roundtrip.py
+python test_roundtrip.py [-h] [--format {structured,json,csv,all}] 
+                        [--show-results] [--all-files-summary {failed,off,all}]
 ```
 
-**Features:**
+**Options:**
+- `--format {structured,json,csv,all}`: Test format selection (default: all)
+- `--show-results`: Show detailed results for all tests (default: hide successful tests, show only failures)
+- `--all-files-summary {failed,off,all}`: Control summary display at the end
+  - `failed` (default): Show only failed files in summary
+  - `off`: Hide the summary section completely
+  - `all`: Show all files (passed and failed) in summary
+
+#### **Features:**
 - 🎯 Automated testing of all test cases in the `test_cases/` directory
-- 🔄 Round-trip validation (encode → decode → compare)
-- 🎨 Colorful emoji-enhanced output for easy status tracking
-- 📊 Detailed success/failure statistics
-- ⚡ Parallel processing for faster test execution
+- 🔄 Round-trip validation (encode → decode → compare) for three formats:
+  - **Structured Text**: Original format ↔ TTLV ↔ Structured format
+  - **JSON**: JSON ↔ TTLV ↔ Structured ↔ JSON
+  - **CSV**: CSV ↔ TTLV ↔ Structured ↔ CSV
+- 📊 Detailed success/failure statistics with configurable verbosity
+- 🔍 Smart error reporting (failures always shown, successes optional)
 
-**Example output:**
+#### **Example Usage and Output:**
+
+**Quiet mode (default):**
+```bash
+python test_roundtrip.py --format structured
 ```
-🧪 Round-trip testing for TTLV encoder/decoder
-🔍 Found 56 test files
-
-✅ example_discover_versions_request.txt - Round-trip successful
-✅ example_create_request.txt - Round-trip successful
-✅ example_get_object_request.txt - Round-trip successful
+```
+🧪 TTLV Round-Trip Validation Script
+==================================================
+🔤 Testing Structured Text Files
+--------------------------------------------------
+� Found 53 structured text files to test
+📊 Structured Text Summary: ✅ 53 passed, ❌ 0 failed
 ...
-
-📊 Round-trip Test Summary:
-✅ Successful: 56/56 (100.0%)
-❌ Failed: 0/56 (0.0%)
-🎉 All tests passed!
+📊 OVERALL SUMMARY: ✅ 53 passed, ❌ 0 failed
+==================================================
+📋 ALL FILES SUMMARY:
+==================================================
+✅ No failed files to display
+🎉 All 53 tests passed successfully!
 ```
 
-### **Test File Format**
+**Verbose mode:**
+```bash
+python test_roundtrip.py --format structured --show-results --all-files-summary all
+```
+```
+============================================================
+Testing Structured: activate_object_request.txt
+============================================================
+1. Loading original structured text...
+   ✅ Loaded 234 characters
+2. Encoding to TTLV binary...
+   ✅ Encoded to 152 bytes
+3. Decoding back to structured text...
+   ✅ Decoded to 234 characters
+4. Comparing original and decoded...
+   ✅ SUCCESS: PERFECT MATCH - Round-trip successful!
+...
+==================================================
+� ALL FILES SUMMARY:
+==================================================
+✅ PASS 📄 activate_object_request.txt
+✅ PASS 📄 activate_object_response.txt
+✅ PASS 📄 create_key_pair_request.txt
+...
+```
 
-Test files use the structured text format that matches decoder output:
-- TEXT_STRING values are represented as `bytearray(b'...')`
-- BYTE_STRING values are represented as plain hex strings
-- Proper hierarchical indentation for STRUCTURE elements
-- Consistent enum name usage (e.g., `CREATE`, `DISCOVER_VERSIONS`)
+### **Test File Formats and Organization**
+
+The test suite includes 159 test files organized in three formats:
+
+**Directory Structure:**
+```
+test_cases/
+├── structured/     # 53 structured text files (.txt)
+├── json/          # 53 JSON files (.json)  
+└── csv/           # 53 CSV files (.csv)
+```
+
+**Format Details:**
+- **Structured Text**: Uses the same format as decoder output
+  - TEXT_STRING values: `bytearray(b'...')`
+  - BYTE_STRING values: plain hex strings
+  - Hierarchical indentation for STRUCTURE elements
+  - Consistent enum names (e.g., `CREATE`, `DISCOVER_VERSIONS`)
+
+- **JSON Format**: Array of objects with `tag`, `type`, and `value` properties
+- **CSV Format**: Comma-separated values with columns for tag, type, and value
+
+All test files contain identical KMIP request/response data in different representations, enabling comprehensive round-trip validation across all supported input formats.
 
 ## License
 
