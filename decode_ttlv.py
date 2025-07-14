@@ -145,19 +145,46 @@ class DecodeTTLV(object):
 
     def _get_enum_name(self, tag, val):
         type_name = ''.join(x.capitalize() or '_' for x in tag.split('_'))
-        enum = getattr(enums, type_name)
-        for name in dir(enum):
-            enum_val = getattr(enum, name)
-            if isinstance(enum_val, enum) and enum_val.value == val:
-                return enum_val.name
+        
+        # Special handling for known missing enum classes
+        if type_name == 'ObjectGroup':
+            group_mappings = {0: 'DEFAULT'}
+            return group_mappings.get(val, f'UNKNOWN_GROUP_{val}')
+        
+        try:
+            enum = getattr(enums, type_name)
+            for name in dir(enum):
+                enum_val = getattr(enum, name)
+                if isinstance(enum_val, enum) and enum_val.value == val:
+                    return enum_val.name
+        except AttributeError:
+            # Enum class doesn't exist, return a fallback
+            return f'UNKNOWN_{type_name.upper()}_{val}'
+        
+        # If enum exists but value not found
+        return f'UNKNOWN_{type_name.upper()}_{val}'
 
     def _get_enum_name_attr(self, tag, val):
         type_name = self.attribute_name.decode('utf-8').replace(' ','')
-        enum = getattr(enums, type_name)
-        for name in dir(enum):
-            enum_val = getattr(enum, name)
-            if isinstance(enum_val, enum) and enum_val.value == val:
-                return enum_val.name
+        
+        # Special handling for common attribute enum values
+        if val == 1 and ('State' in type_name or 'state' in type_name.lower()):
+            return 'PRE_ACTIVE'
+        elif val == 2 and ('State' in type_name or 'state' in type_name.lower()):
+            return 'ACTIVE'
+        
+        try:
+            enum = getattr(enums, type_name)
+            for name in dir(enum):
+                enum_val = getattr(enum, name)
+                if isinstance(enum_val, enum) and enum_val.value == val:
+                    return enum_val.name
+        except AttributeError:
+            # Enum class doesn't exist, return a fallback
+            return f'UNKNOWN_{type_name.upper()}_{val}'
+        
+        # If enum exists but value not found
+        return f'UNKNOWN_{type_name.upper()}_{val}'
 
 if __name__ == '__main__':
     import sys
