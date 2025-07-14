@@ -1,0 +1,72 @@
+[
+  {
+    "tag": "RESPONSE_MESSAGE",
+    "type": "STRUCTURE",
+    "value": [
+      {
+        "tag": "RESPONSE_HEADER",
+        "type": "STRUCTURE",
+        "value": [
+          {
+            "tag": "PROTOCOL_VERSION",
+            "type": "STRUCTURE",
+            "value": [
+              {
+                "tag": "PROTOCOL_VERSION_MAJOR",
+                "type": "INTEGER",
+                "value": 1
+              },
+              {
+                "tag": "PROTOCOL_VERSION_MINOR",
+                "type": "INTEGER",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "tag": "TIME_STAMP",
+            "type": "DATE_TIME",
+            "value": "Thu Jul  3 11:23:13 2025"
+          },
+          {
+            "tag": "BATCH_COUNT",
+            "type": "INTEGER",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "tag": "BATCH_ITEM",
+        "type": "STRUCTURE",
+        "value": [
+          {
+            "tag": "OPERATION",
+            "type": "ENUMERATION",
+            "value": "GET_ATTRIBUTES"
+          },
+          {
+            "tag": "UNIQUE_BATCH_ITEM_ID",
+            "type": "BYTE_STRING",
+            "value": "514c4b4301000000"
+          },
+          {
+            "tag": "RESULT_STATUS",
+            "type": "ENUMERATION",
+            "value": "SUCCESS"
+          },
+          {
+            "tag": "RESPONSE_PAYLOAD",
+            "type": "STRUCTURE",
+            "value": [
+              {
+                "tag": "UNIQUE_IDENTIFIER",
+                "type": "TEXT_STRING",
+                "value": "01000000-7356-8565-621e-08ddba133224"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

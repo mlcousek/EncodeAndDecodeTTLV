@@ -1,0 +1,120 @@
+[
+  {
+    "tag": "RESPONSE_MESSAGE",
+    "type": "STRUCTURE",
+    "value": [
+      {
+        "tag": "RESPONSE_HEADER",
+        "type": "STRUCTURE",
+        "value": [
+          {
+            "tag": "PROTOCOL_VERSION",
+            "type": "STRUCTURE",
+            "value": [
+              {
+                "tag": "PROTOCOL_VERSION_MAJOR",
+                "type": "INTEGER",
+                "value": 1
+              },
+              {
+                "tag": "PROTOCOL_VERSION_MINOR",
+                "type": "INTEGER",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "tag": "TIME_STAMP",
+            "type": "DATE_TIME",
+            "value": "Thu Jul  3 11:23:01 2025"
+          },
+          {
+            "tag": "BATCH_COUNT",
+            "type": "INTEGER",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "tag": "BATCH_ITEM",
+        "type": "STRUCTURE",
+        "value": [
+          {
+            "tag": "OPERATION",
+            "type": "ENUMERATION",
+            "value": "GET"
+          },
+          {
+            "tag": "UNIQUE_BATCH_ITEM_ID",
+            "type": "BYTE_STRING",
+            "value": "514c4b4301000000"
+          },
+          {
+            "tag": "RESULT_STATUS",
+            "type": "ENUMERATION",
+            "value": "SUCCESS"
+          },
+          {
+            "tag": "RESPONSE_PAYLOAD",
+            "type": "STRUCTURE",
+            "value": [
+              {
+                "tag": "OBJECT_TYPE",
+                "type": "ENUMERATION",
+                "value": "SYMMETRIC_KEY"
+              },
+              {
+                "tag": "UNIQUE_IDENTIFIER",
+                "type": "TEXT_STRING",
+                "value": "01000000-7356-8565-621e-08ddba133224"
+              },
+              {
+                "tag": "SYMMETRIC_KEY",
+                "type": "STRUCTURE",
+                "value": [
+                  {
+                    "tag": "OBJECT_TYPE",
+                    "type": "STRUCTURE",
+                    "value": []
+                  },
+                  {
+                    "tag": "KEY_BLOCK",
+                    "type": "STRUCTURE",
+                    "value": [
+                      {
+                        "tag": "KEY_FORMAT_TYPE",
+                        "type": "ENUMERATION",
+                        "value": "RAW"
+                      },
+                      {
+                        "tag": "KEY_VALUE",
+                        "type": "STRUCTURE",
+                        "value": [
+                          {
+                            "tag": "KEY_MATERIAL",
+                            "type": "BYTE_STRING",
+                            "value": "b8f4678313326f854dea84d28600ad03fc4a551982822f0c83575a841addf646"
+                          }
+                        ]
+                      },
+                      {
+                        "tag": "CRYPTOGRAPHIC_ALGORITHM",
+                        "type": "ENUMERATION",
+                        "value": "AES"
+                      },
+                      {
+                        "tag": "CRYPTOGRAPHIC_LENGTH",
+                        "type": "INTEGER",
+                        "value": 256
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

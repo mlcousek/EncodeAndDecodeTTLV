@@ -27,7 +27,7 @@ Install the required PyKMIP library:
 pip install -r requirements.txt
 ```
 
-**Note:** The project includes a comprehensive test suite in the `test_cases/` directory with 56+ example KMIP request/response files for validation and testing.
+**Note:** The project includes a comprehensive test suite in the `test_cases/` directory with 53 example KMIP request/response files for validation and testing. Additional usage examples are available in the `examples/` directory.
 
 ## Usage
 

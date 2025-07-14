@@ -1,0 +1,89 @@
+[
+  {
+    "tag": "RESPONSE_MESSAGE",
+    "type": "STRUCTURE",
+    "value": [
+      {
+        "tag": "RESPONSE_HEADER",
+        "type": "STRUCTURE",
+        "value": [
+          {
+            "tag": "PROTOCOL_VERSION",
+            "type": "STRUCTURE",
+            "value": [
+              {
+                "tag": "PROTOCOL_VERSION_MAJOR",
+                "type": "INTEGER",
+                "value": 1
+              },
+              {
+                "tag": "PROTOCOL_VERSION_MINOR",
+                "type": "INTEGER",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "tag": "BATCH_COUNT",
+            "type": "INTEGER",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "tag": "BATCH_ITEM",
+        "type": "STRUCTURE",
+        "value": [
+          {
+            "tag": "OPERATION",
+            "type": "ENUMERATION",
+            "value": "GET"
+          },
+          {
+            "tag": "RESULT_STATUS",
+            "type": "ENUMERATION",
+            "value": "SUCCESS"
+          },
+          {
+            "tag": "RESPONSE_PAYLOAD",
+            "type": "STRUCTURE",
+            "value": [
+              {
+                "tag": "OBJECT_TYPE",
+                "type": "ENUMERATION",
+                "value": "SYMMETRIC_KEY"
+              },
+              {
+                "tag": "UNIQUE_IDENTIFIER",
+                "type": "TEXT_STRING",
+                "value": "49a1ca88-6bea-4fb2-b450-7e58802c3038"
+              },
+              {
+                "tag": "SYMMETRIC_KEY",
+                "type": "STRUCTURE",
+                "value": [
+                  {
+                    "tag": "KEY_BLOCK",
+                    "type": "STRUCTURE",
+                    "value": [
+                      {
+                        "tag": "KEY_FORMAT_TYPE",
+                        "type": "ENUMERATION",
+                        "value": "RAW"
+                      },
+                      {
+                        "tag": "KEY_VALUE",
+                        "type": "BYTE_STRING",
+                        "value": "0123456789abcdef0123456789abcdef"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

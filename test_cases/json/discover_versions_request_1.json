@@ -11,18 +11,34 @@
             "tag": "PROTOCOL_VERSION",
             "type": "STRUCTURE",
             "value": [
-              {"tag": "PROTOCOL_VERSION_MAJOR", "type": "INTEGER", "value": 1},
-              {"tag": "PROTOCOL_VERSION_MINOR", "type": "INTEGER", "value": 1}
+              {
+                "tag": "PROTOCOL_VERSION_MAJOR",
+                "type": "INTEGER",
+                "value": 1
+              },
+              {
+                "tag": "PROTOCOL_VERSION_MINOR",
+                "type": "INTEGER",
+                "value": 1
+              }
             ]
           },
-          {"tag": "BATCH_COUNT", "type": "INTEGER", "value": 1}
+          {
+            "tag": "BATCH_COUNT",
+            "type": "INTEGER",
+            "value": 1
+          }
         ]
       },
       {
         "tag": "BATCH_ITEM",
         "type": "STRUCTURE",
         "value": [
-          {"tag": "OPERATION", "type": "ENUMERATION", "value": 1},
+          {
+            "tag": "OPERATION",
+            "type": "ENUMERATION",
+            "value": "DISCOVER_VERSIONS"
+          },
           {
             "tag": "REQUEST_PAYLOAD",
             "type": "STRUCTURE",

@@ -1,0 +1,57 @@
+[
+  {
+    "tag": "REQUEST_MESSAGE",
+    "type": "STRUCTURE",
+    "value": [
+      {
+        "tag": "REQUEST_HEADER",
+        "type": "STRUCTURE",
+        "value": [
+          {
+            "tag": "PROTOCOL_VERSION",
+            "type": "STRUCTURE",
+            "value": [
+              {
+                "tag": "PROTOCOL_VERSION_MAJOR",
+                "type": "INTEGER",
+                "value": 1
+              },
+              {
+                "tag": "PROTOCOL_VERSION_MINOR",
+                "type": "INTEGER",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "tag": "BATCH_COUNT",
+            "type": "INTEGER",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "tag": "BATCH_ITEM",
+        "type": "STRUCTURE",
+        "value": [
+          {
+            "tag": "OPERATION",
+            "type": "ENUMERATION",
+            "value": "ACTIVATE"
+          },
+          {
+            "tag": "REQUEST_PAYLOAD",
+            "type": "STRUCTURE",
+            "value": [
+              {
+                "tag": "UNIQUE_IDENTIFIER",
+                "type": "TEXT_STRING",
+                "value": "49a1ca88-6bea-4fb2-b450-7e58802c3038"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

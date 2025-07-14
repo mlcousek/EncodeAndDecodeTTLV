@@ -1,0 +1,104 @@
+[
+  {
+    "tag": "RESPONSE_MESSAGE",
+    "type": "STRUCTURE",
+    "value": [
+      {
+        "tag": "RESPONSE_HEADER",
+        "type": "STRUCTURE",
+        "value": [
+          {
+            "tag": "PROTOCOL_VERSION",
+            "type": "STRUCTURE",
+            "value": [
+              {
+                "tag": "PROTOCOL_VERSION_MAJOR",
+                "type": "INTEGER",
+                "value": 1
+              },
+              {
+                "tag": "PROTOCOL_VERSION_MINOR",
+                "type": "INTEGER",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "tag": "BATCH_COUNT",
+            "type": "INTEGER",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "tag": "BATCH_ITEM",
+        "type": "STRUCTURE",
+        "value": [
+          {
+            "tag": "OPERATION",
+            "type": "ENUMERATION",
+            "value": "GET_ATTRIBUTES"
+          },
+          {
+            "tag": "RESULT_STATUS",
+            "type": "ENUMERATION",
+            "value": "SUCCESS"
+          },
+          {
+            "tag": "RESPONSE_PAYLOAD",
+            "type": "STRUCTURE",
+            "value": [
+              {
+                "tag": "UNIQUE_IDENTIFIER",
+                "type": "TEXT_STRING",
+                "value": "49a1ca88-6bea-4fb2-b450-7e58802c3038"
+              },
+              {
+                "tag": "ATTRIBUTES",
+                "type": "STRUCTURE",
+                "value": [
+                  {
+                    "tag": "CRYPTOGRAPHIC_ALGORITHM",
+                    "type": "ENUMERATION",
+                    "value": "AES"
+                  },
+                  {
+                    "tag": "CRYPTOGRAPHIC_LENGTH",
+                    "type": "INTEGER",
+                    "value": 256
+                  },
+                  {
+                    "tag": "CRYPTOGRAPHIC_USAGE_MASK",
+                    "type": "INTEGER",
+                    "value": 10
+                  },
+                  {
+                    "tag": "STATE",
+                    "type": "ENUMERATION",
+                    "value": "ACTIVE"
+                  },
+                  {
+                    "tag": "NAME",
+                    "type": "STRUCTURE",
+                    "value": [
+                      {
+                        "tag": "NAME_VALUE",
+                        "type": "TEXT_STRING",
+                        "value": "TestKey"
+                      },
+                      {
+                        "tag": "NAME_TYPE",
+                        "type": "ENUMERATION",
+                        "value": "UNINTERPRETED_TEXT_STRING"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
