@@ -42,15 +42,15 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'hel
 try:
     from encode_ttlv import load_from_structured_text_file, encode_from_structured_text, load_from_json_file, encode_ttlv_structure, load_from_text_file
     from decode_ttlv import DecodeTTLV
-    from helpers.convert_to_json import convert_structured_to_json
-    from helpers.convert_to_csv import convert_structured_to_csv
+    from helpers.convert_structured_to_json import convert_structured_to_json
+    from helpers.convert_structured_to_csv import convert_structured_to_csv
     import subprocess
     import io
     import csv
     from contextlib import redirect_stdout
 except ImportError as e:
     print(f"Error importing modules: {e}")
-    print("Make sure encode_ttlv.py, decode_ttlv.py, and helpers/convert_to_json.py are available")
+    print("Make sure encode_ttlv.py, decode_ttlv.py, and helpers/convert_structured_to_json.py are available")
     sys.exit(1)
 
 def decode_ttlv_binary(binary_data):
