@@ -2,7 +2,11 @@
 """
 TTLV Round-Trip Test Script
 
-This script tests encoding and decoding for all .txt files in the tests_to_delete directory.
+This script tests encoding and decoding for all         if not original_text.strip():
+            print("   ❌ ERROR: File is empty, skipping")
+            return False, "Empty file"
+        
+        print(f"   📄 ✅ Loaded {len(original_text)} characters")files in the test_cases directory.
 It performs the following for each file:
 1. Loads the original structured text
 2. Encodes it to TTLV binary format
@@ -91,8 +95,13 @@ def compare_structures(original, decoded):
 
 def test_file(file_path):
     """Test encoding and decoding for a single file."""
+    if isinstance(file_path, str):
+        file_name = os.path.basename(file_path)
+    else:
+        file_name = file_path.name
+    
     print(f"\n{'='*60}")
-    print(f"Testing: {file_path.name}")
+    print(f"Testing: {file_name}")
     print(f"{'='*60}")
     
     try:
@@ -102,10 +111,10 @@ def test_file(file_path):
             original_text = f.read()
         
         if not original_text.strip():
-            print("   ❌ File is empty, skipping")
+            print("   ❌ ERROR: File is empty, skipping")
             return False, "Empty file"
         
-        print(f"   ✓ Loaded {len(original_text)} characters")
+        print(f"   ✅ Loaded {len(original_text)} characters")
         
         # Step 2: Parse and encode to TTLV binary
         print("2. Encoding to TTLV binary...")
@@ -113,7 +122,7 @@ def test_file(file_path):
             structured_data = load_from_structured_text_file(str(file_path))
             encoder = encode_from_structured_text(original_text)
             ttlv_binary = encoder.get_buffer()  # Get the actual binary data
-            print(f"   ✓ Encoded to {len(ttlv_binary)} bytes")
+            print(f"   ✅ Encoded to {len(ttlv_binary)} bytes")
         except Exception as e:
             print(f"   ❌ Encoding failed: {e}")
             return False, f"Encoding error: {e}"
@@ -122,7 +131,7 @@ def test_file(file_path):
         print("3. Decoding back to structured text...")
         try:
             decoded_text = decode_ttlv_binary(ttlv_binary)
-            print(f"   ✓ Decoded to {len(decoded_text)} characters")
+            print(f"   ✅ Decoded to {len(decoded_text)} characters")
         except Exception as e:
             print(f"   ❌ Decoding failed: {e}")
             return False, f"Decoding error: {e}"
@@ -132,7 +141,7 @@ def test_file(file_path):
         matches, differences = compare_structures(original_text, decoded_text)
         
         if matches:
-            print("   ✅ PERFECT MATCH - Round-trip successful!")
+            print("   ✅ SUCCESS: PERFECT MATCH - Round-trip successful!")
             return True, "Success"
         else:
             print("   ⚠️  DIFFERENCES FOUND:")
@@ -143,29 +152,29 @@ def test_file(file_path):
             return False, f"Comparison failed: {len(differences)} differences"
             
     except Exception as e:
-        print(f"   ❌ Unexpected error: {e}")
+        print(f"   ❌ ERROR: Unexpected error: {e}")
         print(f"   Stack trace: {traceback.format_exc()}")
         return False, f"Unexpected error: {e}"
 
 def main():
-    """Main function to test all files in tests_to_delete directory."""
-    print("TTLV Round-Trip Validation Script")
+    """Main function to test all files in test_cases directory."""
+    print("🧪 TTLV Round-Trip Validation Script")
     print("=" * 50)
     
-    # Find the tests_to_delete directory
-    tests_dir = Path("tests_to_delete")
+    # Find the test_cases directory
+    tests_dir = Path("test_cases")
     if not tests_dir.exists():
-        print(f"❌ Directory {tests_dir} not found!")
+        print(f"❌ ERROR: Directory {tests_dir} not found!")
         print("Make sure you're running this script from the project root directory.")
         return
     
     # Find all .txt files
     txt_files = list(tests_dir.glob("*.txt"))
     if not txt_files:
-        print(f"❌ No .txt files found in {tests_dir}")
+        print(f"❌ ERROR: No .txt files found in {tests_dir}")
         return
     
-    print(f"Found {len(txt_files)} .txt files to test")
+    print(f"📁 Found {len(txt_files)} .txt files to test")
     
     # Test each file
     results = []
@@ -183,23 +192,23 @@ def main():
     
     # Print summary
     print(f"\n{'='*80}")
-    print("FINAL SUMMARY")
+    print("📊 FINAL SUMMARY")
     print(f"{'='*80}")
-    print(f"Total files tested: {len(txt_files)}")
+    print(f"📈 Total files tested: {len(txt_files)}")
     print(f"✅ Passed: {passed}")
     print(f"❌ Failed: {failed}")
-    print(f"Success rate: {(passed/len(txt_files)*100):.1f}%")
+    print(f"📊 Success rate: {(passed/len(txt_files)*100):.1f}%")
     
     if failed > 0:
         print(f"\n{'='*50}")
-        print("FAILED FILES:")
+        print("💥 FAILED FILES:")
         print(f"{'='*50}")
         for filename, success, message in results:
             if not success:
                 print(f"❌ {filename}: {message}")
     
     print(f"\n{'='*50}")
-    print("ALL FILES SUMMARY:")
+    print("📋 ALL FILES SUMMARY:")
     print(f"{'='*50}")
     for filename, success, message in results:
         status = "✅ PASS" if success else "❌ FAIL"

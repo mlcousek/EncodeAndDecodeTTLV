@@ -9,6 +9,9 @@ This utility provides both encoding and decoding capabilities for TTLV (Tag-Type
 - Support for all KMIP data types (INTEGER, TEXT_STRING, ENUMERATION, STRUCTURE, etc.)
 - Hierarchical structure display with proper indentation
 - Automatic enum name resolution using PyKMIP definitions
+- **Output Conventions:**
+  - TEXT_STRING values displayed as `bytearray(b'...')`
+  - BYTE_STRING values displayed as plain hex strings
 
 ### 🔧 **TTLV Encoder** (`encode_ttlv.py`)
 - Encode data into TTLV format from multiple input sources
@@ -23,6 +26,8 @@ Install the required PyKMIP library:
 ```bash
 pip install -r requirements.txt
 ```
+
+**Note:** The project includes a comprehensive test suite in the `test_cases/` directory with 56+ example KMIP request/response files for validation and testing.
 
 ## Usage
 
@@ -65,6 +70,8 @@ REQUEST_MESSAGE:STRUCTURE(96):stru1
   REQUEST_PAYLOAD:STRUCTURE(0):stru3
 ```
 
+**Note:** The structured text format is designed for round-trip compatibility - output from the decoder can be directly used as input to the encoder.
+
 **Command:**
 ```bash
 python encode_ttlv.py --structured example_discover_versions.txt --decode
@@ -104,8 +111,8 @@ OPERATION,ENUMERATION,CREATE
 | `LONG_INTEGER` | 64-bit signed integer | `1234567890` |
 | `ENUMERATION` | Enum values (supports names) | `CREATE`, `1` |
 | `BOOLEAN` | Boolean values | `true`, `false` |
-| `TEXT_STRING` | UTF-8 text | `"Hello World"` |
-| `BYTE_STRING` | Binary data (hex) | `"48656c6c6f"` |
+| `TEXT_STRING` | UTF-8 text (decoded as `bytearray(b'...')`) | `bytearray(b'Hello World')` |
+| `BYTE_STRING` | Binary data (decoded as hex) | `48656c6c6f` |
 | `STRUCTURE` | Nested TTLV elements | Contains child elements |
 | `DATE_TIME` | Timestamp | Unix timestamp |
 
@@ -138,7 +145,7 @@ REQUEST_MESSAGE:STRUCTURE(200):stru1
    OBJECT_TYPE:ENUMERATION(4):2
    TEMPLATE_ATTRIBUTE:STRUCTURE(40):stru4
     ATTRIBUTE:STRUCTURE(30):stru5
-     ATTRIBUTE_NAME:TEXT_STRING(20):Cryptographic Length
+     ATTRIBUTE_NAME:TEXT_STRING(20):bytearray(b'Cryptographic Length')
      ATTRIBUTE_VALUE:INTEGER(4):256
 ```
 
@@ -151,6 +158,47 @@ python encode_ttlv.py --structured my_request.txt --output encoded.hex
 ```bash
 python decode_ttlv.py $(cat encoded.hex)
 ```
+
+## Testing and Validation
+
+### 🧪 **Round-Trip Testing**
+
+The project includes a comprehensive round-trip test suite that validates encoding and decoding functionality across all example KMIP request/response files:
+
+```bash
+python test_roundtrip.py
+```
+
+**Features:**
+- 🎯 Automated testing of all test cases in the `test_cases/` directory
+- 🔄 Round-trip validation (encode → decode → compare)
+- 🎨 Colorful emoji-enhanced output for easy status tracking
+- 📊 Detailed success/failure statistics
+- ⚡ Parallel processing for faster test execution
+
+**Example output:**
+```
+🧪 Round-trip testing for TTLV encoder/decoder
+🔍 Found 56 test files
+
+✅ example_discover_versions_request.txt - Round-trip successful
+✅ example_create_request.txt - Round-trip successful
+✅ example_get_object_request.txt - Round-trip successful
+...
+
+📊 Round-trip Test Summary:
+✅ Successful: 56/56 (100.0%)
+❌ Failed: 0/56 (0.0%)
+🎉 All tests passed!
+```
+
+### **Test File Format**
+
+Test files use the structured text format that matches decoder output:
+- TEXT_STRING values are represented as `bytearray(b'...')`
+- BYTE_STRING values are represented as plain hex strings
+- Proper hierarchical indentation for STRUCTURE elements
+- Consistent enum name usage (e.g., `CREATE`, `DISCOVER_VERSIONS`)
 
 ## License
 
