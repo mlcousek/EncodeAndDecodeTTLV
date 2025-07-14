@@ -12,11 +12,10 @@ This utility provides both encoding and decoding capabilities for TTLV (Tag-Type
 
 ### 🔧 **TTLV Encoder** (`encode_ttlv.py`)
 - Encode data into TTLV format from multiple input sources
-- Support for JSON, CSV text files, and **structured text format**
+- Support for JSON, CSV text files, and structured text format
 - Interactive mode for building TTLV structures
 - Comprehensive data type support with proper padding
-- Built-in validation and error handling
-- **NEW**: Structured text format with indentation support
+- Structured text format with indentation support
 
 ## Installation
 
@@ -97,16 +96,6 @@ ATTRIBUTE_VALUE,INTEGER,42
 OPERATION,ENUMERATION,CREATE
 ```
 
-#### 4. **Interactive Mode**
-```bash
-python encode_ttlv.py --interactive
-```
-
-#### 5. **Test Mode**
-```bash
-python encode_ttlv.py test
-```
-
 ## Supported Data Types
 
 | Type | Description | Example |
@@ -162,54 +151,6 @@ python encode_ttlv.py --structured my_request.txt --output encoded.hex
 ```bash
 python decode_ttlv.py $(cat encoded.hex)
 ```
-
-### Programming Interface
-
-```python
-from encode_ttlv import encode_from_structured_text, EncodeTTLV
-from decode_ttlv import DecodeTTLV
-
-# Method 1: From structured text
-structured_text = """ATTRIBUTE_NAME:TEXT_STRING(13):TestAttribute"""
-encoder = encode_from_structured_text(structured_text)
-hex_output = encoder.get_hex_string()
-
-# Method 2: Programmatic encoding
-encoder = EncodeTTLV()
-encoder.encode_ttlv('ATTRIBUTE_NAME', 'TEXT_STRING', 'TestAttribute')
-hex_output = encoder.get_hex_string()
-
-# Decode
-decoder = DecodeTTLV(encoder.get_buffer())
-decoder.decode()
-```
-
-## File Structure
-
-```
-EncodeAndDecodeTTLV/
-├── encode_ttlv.py              # Main encoder script
-├── decode_ttlv.py              # Main decoder script
-├── requirements.txt            # Python dependencies
-├── tests/                      # Test files
-│   ├── test_encoder.py         # Comprehensive tests
-│   ├── quick_start.py          # Quick start examples
-│   ├── simple_test.py          # Basic validation
-│   └── run_tests.py           # Test runner
-├── example_discover_versions.txt # Example structured file
-├── example_create_key.txt      # Complex example
-└── README.md                   # This file
-```
-
-## Advanced Features
-
-- **Automatic enum resolution** from PyKMIP library
-- **Proper TTLV padding** according to KMIP specification  
-- **Nested structure support** with unlimited depth
-- **Round-trip encoding/decoding** verification
-- **Error handling** with detailed error messages
-- **Multiple output formats** (hex, binary)
-- **Command-line integration** for automation
 
 ## License
 

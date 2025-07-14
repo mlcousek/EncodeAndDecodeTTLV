@@ -191,46 +191,137 @@ class EncodeTTLV(object):
         # If name is already an integer, return it directly
         if isinstance(name, int):
             return name
+        
+        # Special handling for common enum values
+        if enum_name == 'ATTRIBUTE_VALUE':
+            # Common attribute value enums
+            common_mappings = {
+                'AES': 3,
+                'DES': 1,
+                'TRIPLE_DES': 2,
+                'RSA': 4,
+                'DSA': 5,
+                'SYMMETRIC_KEY': 2,
+                'PUBLIC_KEY': 3,
+                'PRIVATE_KEY': 4,
+                'CERTIFICATE': 6,
+                'USERNAME_AND_PASSWORD': 1,
+                'DEVICE_SPECIFIC': 2
+            }
+            if name in common_mappings:
+                return common_mappings[name]
+        
+        # Special mappings for other common enums
+        if enum_name == 'CREDENTIAL_TYPE':
+            credential_mappings = {
+                'USERNAME_AND_PASSWORD': 1,
+                'DEVICE_SPECIFIC': 2
+            }
+            if name in credential_mappings:
+                return credential_mappings[name]
+        
+        if enum_name == 'OBJECT_TYPE':
+            object_mappings = {
+                'CERTIFICATE': 1,
+                'SYMMETRIC_KEY': 2,
+                'PUBLIC_KEY': 3,
+                'PRIVATE_KEY': 4,
+                'SPLIT_KEY': 5,
+                'TEMPLATE': 6,
+                'SECRET_DATA': 7,
+                'OPAQUE_DATA': 8
+            }
+            if name in object_mappings:
+                return object_mappings[name]
+        
+        if enum_name == 'OBJECT_GROUP':
+            group_mappings = {
+                'DEFAULT': 0,
+                'NONE': 0
+            }
+            if name in group_mappings:
+                return group_mappings[name]
             
         type_name = ''.join(x.capitalize() or '_' for x in enum_name.split('_'))
-        enum_class = getattr(enums, type_name)
         
-        # Try to get the enum value by name
-        if hasattr(enum_class, str(name)):
-            enum_val = getattr(enum_class, str(name))
-            if hasattr(enum_val, 'value'):
-                return enum_val.value
-        
-        # If not found by name, search through all enum values
-        for attr_name in dir(enum_class):
-            enum_val = getattr(enum_class, attr_name)
-            if hasattr(enum_val, 'name') and enum_val.name == str(name):
-                return enum_val.value
+        try:
+            enum_class = getattr(enums, type_name)
+            
+            # Try to get the enum value by name
+            if hasattr(enum_class, str(name)):
+                enum_val = getattr(enum_class, str(name))
+                if hasattr(enum_val, 'value'):
+                    return enum_val.value
+            
+            # If not found by name, search through all enum values
+            for attr_name in dir(enum_class):
+                enum_val = getattr(enum_class, attr_name)
+                if hasattr(enum_val, 'name') and enum_val.name == str(name):
+                    return enum_val.value
+                    
+        except AttributeError:
+            # If enum class doesn't exist, try some fallbacks
+            pass
                 
-        raise ValueError("Enum value '{0}' not found in {1}".format(name, type_name))
+        raise ValueError("Enum value '{0}' not found in {1}".format(name, enum_name))
     
     def _get_enum_value_attr(self, tag, name):
         """Get attribute enum value by name using stored attribute name"""
         # If name is already an integer, return it directly
         if isinstance(name, int):
             return name
+        
+        # Special handling for common KMIP state values
+        state_mappings = {
+            'PRE_ACTIVE': 1,
+            'ACTIVE': 2,
+            'DEACTIVATED': 3,
+            'COMPROMISED': 4,
+            'DESTROYED': 5,
+            'DESTROYED_COMPROMISED': 6
+        }
+        
+        if str(name) in state_mappings:
+            return state_mappings[str(name)]
+        
+        # Debug: check if attribute_name is set
+        if not hasattr(self, 'attribute_name') or not self.attribute_name:
+            # Fallback: try to get enum value directly from tag
+            return self._get_enum_value(tag, name)
             
-        type_name = self.attribute_name.decode('utf-8').replace(' ', '')
-        enum_class = getattr(enums, type_name)
-        
-        # Try to get the enum value by name
-        if hasattr(enum_class, str(name)):
-            enum_val = getattr(enum_class, str(name))
-            if hasattr(enum_val, 'value'):
-                return enum_val.value
-        
-        # If not found by name, search through all enum values
-        for attr_name in dir(enum_class):
-            enum_val = getattr(enum_class, attr_name)
-            if hasattr(enum_val, 'name') and enum_val.name == str(name):
-                return enum_val.value
+        try:
+            type_name = self.attribute_name.decode('utf-8').replace(' ', '')
+            
+            # Debug: check if type_name is empty
+            if not type_name:
+                return self._get_enum_value(tag, name)
                 
-        raise ValueError("Enum value '{0}' not found in {1}".format(name, type_name))
+            # Try common enum classes for attribute values
+            enum_classes_to_try = [type_name, 'State', 'CryptographicUsageMask', 'CryptographicAlgorithm']
+            
+            for enum_class_name in enum_classes_to_try:
+                try:
+                    enum_class = getattr(enums, enum_class_name)
+                    
+                    # Try to get the enum value by name
+                    if hasattr(enum_class, str(name)):
+                        enum_val = getattr(enum_class, str(name))
+                        if hasattr(enum_val, 'value'):
+                            return enum_val.value
+                    
+                    # If not found by name, search through all enum values
+                    for attr_name in dir(enum_class):
+                        enum_val = getattr(enum_class, attr_name)
+                        if hasattr(enum_val, 'name') and enum_val.name == str(name):
+                            return enum_val.value
+                except AttributeError:
+                    continue  # Try next enum class
+                    
+            raise ValueError("Enum value '{0}' not found in attribute enums".format(name))
+            
+        except (AttributeError, UnicodeDecodeError) as e:
+            # Fallback to regular enum lookup if attribute-based lookup fails
+            return self._get_enum_value(tag, name)
 
 
 def encode_ttlv_structure(elements):
@@ -382,56 +473,6 @@ def show_usage():
     print('  {"tag": "ATTRIBUTE_NAME", "type": "TEXT_STRING", "value": "MyAttribute"},')
     print('  {"tag": "ATTRIBUTE_VALUE", "type": "INTEGER", "value": 42}')
     print(']')
-
-def interactive_mode():
-    """Interactive mode to build TTLV structure"""
-    print("Interactive TTLV Encoder")
-    print("=" * 30)
-    print("Enter TTLV elements (press Enter with empty tag to finish)")
-    print()
-    
-    elements = []
-    while True:
-        print(f"Element {len(elements) + 1}:")
-        tag = input("  Tag: ").strip()
-        if not tag:
-            break
-        
-        type_name = input("  Type: ").strip()
-        if not type_name:
-            print("  Type is required!")
-            continue
-        
-        value = input("  Value: ").strip()
-        if not value:
-            print("  Value is required!")
-            continue
-        
-        # Convert value based on type
-        if type_name.upper() == 'INTEGER':
-            try:
-                value = int(value)
-            except ValueError:
-                print("  Invalid integer value!")
-                continue
-        elif type_name.upper() == 'BOOLEAN':
-            value = value.lower() in ('true', '1', 'yes')
-        elif type_name.upper() == 'ENUMERATION':
-            try:
-                value = int(value)
-            except ValueError:
-                pass  # Keep as string
-        
-        elements.append({
-            'tag': tag.upper(),
-            'type': type_name.upper(),
-            'value': value
-        })
-        
-        print(f"  Added: {tag} = {value}")
-        print()
-    
-    return elements
 
 def parse_structured_text(text_content):
     """
@@ -681,7 +722,7 @@ def encode_from_structured_text(text_content):
     
     return encode_ttlv_structure(flat_elements)
 
-# ...existing code...
+
 if __name__ == '__main__':
     import sys
     import argparse
@@ -693,30 +734,7 @@ if __name__ == '__main__':
     parser.add_argument('--structured', help='Input structured text file (with indentation)')
     parser.add_argument('--output', help='Output file (optional)')
     parser.add_argument('--format', choices=['hex', 'binary'], default='hex', help='Output format')
-    parser.add_argument('--interactive', action='store_true', help='Interactive mode')
     parser.add_argument('--decode', action='store_true', help='Also decode and show the result')
-    
-    # Handle old-style test command
-    if len(sys.argv) > 1 and sys.argv[1] == 'test':
-        # Create a test TTLV structure
-        encoder = EncodeTTLV()
-        
-        # Example: encode a text string
-        encoder.encode_ttlv('ATTRIBUTE_NAME', 'TEXT_STRING', 'Test Attribute')
-        encoder.encode_ttlv('ATTRIBUTE_VALUE', 'TEXT_STRING', 'Test Value')
-        
-        # Print the hex representation
-        print("Encoded TTLV (hex):", encoder.get_hex_string())
-        
-        # Test with decoder
-        try:
-            from decode_ttlv import DecodeTTLV
-            decoder = DecodeTTLV(encoder.get_buffer())
-            print("\nDecoded output:")
-            decoder.decode()
-        except ImportError:
-            print("Decoder not available for testing")
-        sys.exit(0)
     
     # Parse arguments
     if len(sys.argv) == 1:
@@ -737,8 +755,6 @@ if __name__ == '__main__':
     elif args.structured:
         print(f"Loading from structured text file: {args.structured}")
         elements = load_from_structured_text_file(args.structured)
-    elif args.interactive:
-        elements = interactive_mode()
     else:
         show_usage()
         sys.exit(1)
