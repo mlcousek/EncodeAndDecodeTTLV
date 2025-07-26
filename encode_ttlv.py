@@ -404,31 +404,23 @@ def load_from_text_file(filename):
 
 def save_output(encoder, output_file=None, format='hex'):
     """Save encoder output to file or print to console"""
-    if format.lower() == 'hex':
-        output = encoder.get_hex_string()
-    elif format.lower() == 'binary':
-        output = encoder.get_buffer()
-    else:
-        output = encoder.get_hex_string()
     
     if output_file:
+        # When writing to file, always write binary data
         try:
-            if format.lower() == 'binary':
-                with open(output_file, 'wb') as f:
-                    f.write(output)
-            else:
-                with open(output_file, 'w', encoding='utf-8') as f:
-                    f.write(output)
-            print(f"Output saved to: {output_file}")
+            with open(output_file, 'wb') as f:
+                f.write(encoder.get_buffer())
+            print(f"Binary output saved to: {output_file}")
         except Exception as e:
             print(f"Error saving to {output_file}: {e}")
     else:
+        # When printing to console, respect the format parameter
         if format.lower() == 'binary':
-            print("Binary output:")
-            print(binascii.hexlify(output).decode('utf-8'))
+            print("Binary output (hex representation):")
+            print(binascii.hexlify(encoder.get_buffer()).decode('utf-8'))
         else:
             print("Hex output:")
-            print(output)
+            print(encoder.get_hex_string())
 
 def show_usage():
     """Show usage information"""
@@ -439,16 +431,18 @@ def show_usage():
     print("   python encode_ttlv.py test")
     print()
     print("2. From JSON file:")
-    print("   python encode_ttlv.py --json input.json [--output output.hex] [--format hex|binary]")
+    print("   python encode_ttlv.py --json input.json [--output output.bin] [--format hex|binary]")
     print()
     print("3. From text file (CSV format):")
-    print("   python encode_ttlv.py --text input.txt [--output output.hex] [--format hex|binary]")
+    print("   python encode_ttlv.py --text input.txt [--output output.bin] [--format hex|binary]")
     print()
     print("4. From structured text file (with indentation):")
-    print("   python encode_ttlv.py --structured input.txt [--output output.hex] [--format hex|binary]")
+    print("   python encode_ttlv.py --structured input.txt [--output output.bin] [--format hex|binary]")
     print()
     print("5. Interactive mode:")
     print("   python encode_ttlv.py --interactive")
+    print()
+    print("Note: Files are always saved in binary format. --format only affects console output.")
     print()
     print("Text file format (CSV - one element per line):")
     print("TAG,TYPE,VALUE")
@@ -733,7 +727,7 @@ if __name__ == '__main__':
     parser.add_argument('--text', help='Input text file (simple CSV format)')
     parser.add_argument('--structured', help='Input structured text file (with indentation)')
     parser.add_argument('--output', help='Output file (optional)')
-    parser.add_argument('--format', choices=['hex', 'binary'], default='hex', help='Output format')
+    parser.add_argument('--format', choices=['hex', 'binary'], default='hex', help='Console output format (files always saved as binary)')
     parser.add_argument('--decode', action='store_true', help='Also decode and show the result')
     
     # Parse arguments
